@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#161617" media="(prefers-color-scheme: dark)">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e9eaf2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#22232b" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Небольшая памятка о цифровом шуме: как замечать лишние сигналы и настраивать цифровую среду под себя.">
   <title>Тише в цифре — памятка о цифровом шуме</title>
   <style>
@@ -41,6 +41,9 @@
       --glass-edge: rgba(255,255,255,.82);
       --glass-highlight: rgba(255,255,255,.94);
       --glass-shadow: 0 22px 55px rgba(31,38,65,.14), inset 0 1px 0 rgba(255,255,255,.92), inset 0 -1px 0 rgba(255,255,255,.28);
+      --chrome-base: #e9eaf2;
+      --chrome-glow: rgba(151,157,255,.26);
+      --chrome-mint: rgba(116,211,190,.2);
       --radius: 28px;
     }
     @media (prefers-color-scheme: dark) {
@@ -76,6 +79,9 @@
         --glass-edge: rgba(255,255,255,.28);
         --glass-highlight: rgba(255,255,255,.52);
         --glass-shadow: 0 22px 55px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.52), inset 0 -1px 0 rgba(255,255,255,.1);
+        --chrome-base: #22232b;
+        --chrome-glow: rgba(127,132,255,.22);
+        --chrome-mint: rgba(75,190,165,.13);
       }
     }
     * { box-sizing: border-box; }
@@ -93,7 +99,7 @@
     a:hover { text-decoration: underline; }
     button { font: inherit; }
     :focus-visible { outline: 3px solid rgba(0,102,204,.55); outline-offset: 4px; border-radius: 8px; }
-    .nav-wrap { position: sticky; top: 0; z-index: 5; background: linear-gradient(115deg, rgba(255,255,255,.25), transparent 32%, rgba(255,255,255,.09) 68%, transparent), linear-gradient(180deg, var(--glass-fill-strong), var(--nav-surface)); backdrop-filter: saturate(220%) blur(34px); -webkit-backdrop-filter: saturate(220%) blur(34px); border-bottom: 1px solid var(--glass-edge); box-shadow: 0 10px 34px rgba(20,25,40,.09), inset 0 1px 0 var(--glass-highlight), inset 0 -1px 0 rgba(255,255,255,.16); }
+    .nav-wrap { position: sticky; top: 0; z-index: 5; padding-top: env(safe-area-inset-top, 0px); background: radial-gradient(ellipse at 18% 0%, var(--chrome-glow), transparent 62%), radial-gradient(ellipse at 82% 0%, var(--chrome-mint), transparent 58%), linear-gradient(180deg, var(--chrome-base) 0%, color-mix(in srgb, var(--chrome-base) 62%, transparent) 32%, var(--nav-surface) 100%); backdrop-filter: saturate(230%) blur(36px); -webkit-backdrop-filter: saturate(230%) blur(36px); box-shadow: 0 12px 36px rgba(20,25,40,.1), inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 var(--glass-edge); }
     nav { max-width: 1100px; min-height: 54px; margin: auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
     .brand { font-size: 15px; font-weight: 650; color: var(--ink); letter-spacing: -.03em; white-space: nowrap; }
     .brand-mark { display: inline-grid; place-items: center; width: 23px; height: 23px; margin-right: 7px; border-radius: 8px; background: linear-gradient(145deg,#47474c,#1d1d1f); color: white; font-size: 14px; vertical-align: -2px; box-shadow: 0 2px 5px rgba(0,0,0,.16); }

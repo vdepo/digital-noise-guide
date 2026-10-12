@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="Небольшая памятка о цифровом шуме: как замечать лишние сигналы и настраивать цифровую среду под себя.">
+  <title>Тише в цифре — памятка о цифровом шуме</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f5f7;
+      --card: #fff;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --blue: #06c;
+      --line: rgba(29, 29, 31, .09);
+      --mint: #d8f2e6;
+      --lavender: #e9e4ff;
+      --peach: #ffe6d4;
+      --shadow: 0 24px 70px rgba(20, 25, 40, .08);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+      line-height: 1.55;
+      letter-spacing: -.012em;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { font: inherit; }
+    .nav-wrap { position: sticky; top: 0; z-index: 5; background: rgba(245,245,247,.82); backdrop-filter: saturate(180%) blur(18px); border-bottom: 1px solid rgba(0,0,0,.05); }
+    nav { max-width: 1100px; min-height: 54px; margin: auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { font-size: 15px; font-weight: 650; color: var(--ink); letter-spacing: -.03em; white-space: nowrap; }
+    .brand-mark { display: inline-grid; place-items: center; width: 23px; height: 23px; margin-right: 7px; border-radius: 8px; background: var(--ink); color: white; font-size: 14px; vertical-align: -2px; }
+    .nav-links { display: flex; gap: 24px; font-size: 12px; }
+    .nav-links a { color: #424245; }
+    .wrap { width: min(100% - 40px, 1060px); margin-inline: auto; }
+    .hero { min-height: 630px; padding: 88px 0 64px; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 42px; }
+    .eyebrow { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { max-width: 620px; margin: 14px 0 20px; font-size: clamp(54px, 8vw, 92px); line-height: .98; letter-spacing: -.075em; font-weight: 700; }
+    .hero p { max-width: 520px; margin: 0; color: #515154; font-size: clamp(18px, 2vw, 22px); line-height: 1.42; letter-spacing: -.025em; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 0 19px; border: 0; border-radius: 999px; background: var(--blue); color: #fff; font-size: 15px; font-weight: 600; transition: transform .2s ease, background .2s ease; }
+    .button:hover { background: #0077ed; text-decoration: none; transform: translateY(-1px); }
+    .button.secondary { background: #e8e8ed; color: var(--ink); }
+    .hero-art { position: relative; min-height: 380px; display: grid; place-items: center; overflow: hidden; border-radius: 42px; background: linear-gradient(145deg, #e5e9ff 0%, #f1f1f6 43%, #d8f2e6 100%); box-shadow: var(--shadow); }
+    .orb { position: absolute; width: 300px; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #fff 0 4%, #d9d5ff 18%, #a9a5ed 48%, #7778ca 72%, #6667a5 100%); box-shadow: inset -18px -24px 50px rgba(50,48,100,.2), 0 28px 80px rgba(70,75,150,.25); }
+    .ring { position: absolute; width: 385px; height: 120px; border: 1px solid rgba(60,60,100,.25); border-radius: 50%; transform: rotate(-24deg); }
+    .ring.r2 { transform: rotate(32deg); width: 420px; height: 148px; border-color: rgba(255,255,255,.65); }
+    .spark { position: absolute; width: 13px; height: 13px; border-radius: 50%; background: #fff; box-shadow: 0 0 25px 8px rgba(255,255,255,.8); }
+    .spark.s1 { top: 23%; left: 24%; }.spark.s2 { bottom: 22%; right: 19%; width: 8px; height: 8px; }
+    .art-caption { position: absolute; left: 24px; bottom: 20px; color: rgba(29,29,31,.65); font-size: 12px; }
+    .section { padding: 72px 0; }
+    .section-head { max-width: 720px; margin-bottom: 30px; }
+    .section h2 { margin: 0 0 12px; font-size: clamp(36px, 5.6vw, 58px); line-height: 1.02; letter-spacing: -.06em; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 18px; }
+    .definition { padding: 34px; border-radius: var(--radius); background: var(--ink); color: #f5f5f7; box-shadow: var(--shadow); }
+    .definition .label { color: #a1a1a6; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .definition p { max-width: 850px; margin: 12px 0 0; font-size: clamp(22px, 3.2vw, 34px); line-height: 1.27; letter-spacing: -.04em; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { min-height: 225px; padding: 24px; border-radius: var(--radius); background: var(--card); box-shadow: 0 8px 30px rgba(20,25,40,.035); }
+    .card .icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; margin-bottom: 28px; font-size: 21px; }
+    .card:nth-child(1) .icon { background: var(--lavender); }.card:nth-child(2) .icon { background: var(--mint); }.card:nth-child(3) .icon { background: var(--peach); }
+    .card h3 { margin: 0 0 8px; font-size: 21px; line-height: 1.15; letter-spacing: -.04em; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    .note { margin-top: 17px; padding: 16px 18px; border-radius: 18px; background: rgba(0,102,204,.06); color: #424245; font-size: 14px; }
+    .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; counter-reset: step; }
+    .step { display: flex; gap: 16px; padding: 21px; border-radius: 22px; background: white; }
+    .step::before { counter-increment: step; content: counter(step, decimal-leading-zero); flex: 0 0 38px; color: var(--blue); font-size: 14px; font-weight: 700; padding-top: 3px; }
+    .step h3 { margin: 0 0 5px; font-size: 18px; letter-spacing: -.03em; }
+    .step p { margin: 0; color: var(--muted); font-size: 14px; }
+    .plan { padding: 34px; border-radius: 32px; background: linear-gradient(135deg, #e9e4ff, #f2f2f6 55%, #d8f2e6); }
+    .plan-grid { display: grid; grid-template-columns: 1fr .8fr; gap: 30px; align-items: start; }
+    .checks { display: grid; gap: 10px; margin-top: 20px; }
+    .check { display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px; border: 1px solid rgba(29,29,31,.08); border-radius: 16px; background: rgba(255,255,255,.74); cursor: pointer; }
+    .check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--blue); }
+    .check span { font-size: 14px; }
+    .plan-result { position: sticky; top: 80px; padding: 22px; border-radius: 22px; background: rgba(255,255,255,.83); }
+    .plan-result h3 { margin: 0 0 7px; font-size: 20px; }
+    .plan-result p { margin: 0; color: var(--muted); font-size: 14px; }
+    .meter { height: 7px; margin: 18px 0 10px; border-radius: 10px; background: #e5e5ea; overflow: hidden; }
+    .meter span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--blue); transition: width .25s ease; }
+    .count { color: var(--blue); font-size: 13px; font-weight: 650; }
+    .sources { display: grid; gap: 10px; }
+    details { padding: 17px 19px; border-radius: 17px; background: #fff; }
+    summary { cursor: pointer; font-size: 15px; font-weight: 600; }
+    details p { margin: 11px 0 0; color: var(--muted); font-size: 14px; }
+    footer { padding: 34px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    footer .footline { display: flex; justify-content: space-between; gap: 20px; }
+    .small { font-size: 12px; }
+    @media (max-width: 760px) {
+      .nav-links { gap: 13px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+      .nav-links a:last-child { display: none; }
+      nav { padding: 0 16px; }
+      .wrap { width: min(100% - 28px, 1060px); }
+      .hero { min-height: initial; padding: 64px 0 42px; grid-template-columns: 1fr; gap: 35px; }
+      .hero-art { min-height: 300px; }
+      .orb { width: 230px; }.ring { width: 300px; }.ring.r2 { width: 330px; }
+      .section { padding: 50px 0; }
+      .cards { grid-template-columns: 1fr; }
+      .card { min-height: initial; }
+      .card .icon { margin-bottom: 18px; }
+      .steps, .plan-grid { grid-template-columns: 1fr; }
+      .plan { padding: 22px; }
+      .plan-result { position: static; }
+      .definition { padding: 25px; }
+      footer .footline { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap">
+    <nav aria-label="Основная навигация">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">≈</span>Тише в цифре</a>
+      <div class="nav-links">
+        <a href="#noise">Что такое шум</a><a href="#signals">Как проявляется</a><a href="#steps">Что попробовать</a><a href="#plan">Мой план</a>
+      </div>
+    </nav>
+  </div>
+  <main id="top">
+    <header class="wrap hero">
+      <div>
+        <div class="eyebrow">Небольшая памятка о цифровой среде</div>
+        <h1>Чуть тише.<br>Чуть легче.</h1>
+        <p>Цифровые устройства помогают учиться и быть на связи. Иногда сигналов становится слишком много. Разберись, что отвлекает именно тебя, и настрой среду под себя.</p>
+        <div class="actions"><a class="button" href="#steps">Начать с малого <span aria-hidden="true">&nbsp;↓</span></a><a class="button secondary" href="#noise">Что мы называем шумом</a></div>
+      </div>
+      <div class="hero-art" role="img" aria-label="Абстрактная мягкая сфера и тонкие орбиты">
+        <div class="ring"></div><div class="ring r2"></div><div class="orb"></div><div class="spark s1"></div><div class="spark s2"></div>
+        <div class="art-caption">Не выключать всё. Выбрать важное.</div>
+      </div>
+    </header>
+
+    <section class="wrap section" id="noise">
+      <div class="section-head"><div class="eyebrow">01 · Определение</div><h2>Не вся информация — шум.</h2><p>В проекте используется рабочее определение: оно помогает обсуждать тему, но не является медицинским термином.</p></div>
+      <div class="definition"><div class="label">Цифровой шум</div><p>поток уведомлений, сообщений и рекомендаций, который отвлекает, перегружает или мешает сосредоточиться на важном.</p></div>
+    </section>
+
+    <section class="wrap section" id="signals">
+      <div class="section-head"><div class="eyebrow">02 · Заметь сигналы</div><h2>Как это может ощущаться</h2><p>Это повседневные наблюдения, а не тест и не способ поставить себе диагноз.</p></div>
+      <div class="cards">
+        <article class="card"><div class="icon" aria-hidden="true">⌁</div><h3>Трудно удержать внимание</h3><p>Сообщения и переключения постоянно уводят от одного дела к другому.</p></article>
+        <article class="card"><div class="icon" aria-hidden="true">◷</div><h3>Не получается отдохнуть</h3><p>Хочется проверять экран даже во время паузы или перед сном.</p></article>
+        <article class="card"><div class="icon" aria-hidden="true">♡</div><h3>Появляется напряжение</h3><p>Кажется, что нужно сразу отвечать, всё читать или ничего не пропустить.</p></article>
+      </div>
+      <div class="note"><strong>Важно:</strong> связь между цифровыми привычками и самочувствием зависит от ситуации и человека. Такие признаки могут иметь разные причины; они сами по себе ничего не диагностируют. [1, 2]</div>
+    </section>
+
+    <section class="wrap section" id="steps">
+      <div class="section-head"><div class="eyebrow">03 · Простые настройки</div><h2>Попробуй один шаг.</h2><p>Не обязательно менять всё сразу. Оставь нужные уведомления и выбери то, что подходит твоему дню.</p></div>
+      <div class="steps">
+        <article class="step"><div><h3>Оставь только важные уведомления</h3><p>Отключи необязательные сигналы, а для близких и важных дел настрой исключения.</p></div></article>
+        <article class="step"><div><h3>Собери сообщения в удобное время</h3><p>Выбери паузы для проверки чатов, чтобы не переключаться при каждом сигнале.</p></div></article>
+        <article class="step"><div><h3>Защити время перед сном</h3><p>Попробуй отложить телефон или включить режим сна. Срочные контакты можно оставить доступными.</p></div></article>
+        <article class="step"><div><h3>Настрой ленту под себя</h3><p>Скрывай лишнее, отписывайся от источников, после которых чувствуешь перегрузку.</p></div></article>
+        <article class="step"><div><h3>Делай короткие паузы</h3><p>Во время учёбы убери телефон из поля зрения или включи фокусирование на одном деле.</p></div></article>
+        <article class="step"><div><h3>Обсуди общие правила</h3><p>Договорись с друзьями и семьёй, когда удобно отвечать и что считать срочным.</p></div></article>
+      </div>
+      <div class="note">Эти идеи помогают управлять цифровой средой, но не обещают гарантированного улучшения самочувствия. Подходы согласуются с рекомендациями ВОЗ и Американской психологической ассоциации. [1, 3]</div>
+    </section>
+
+    <section class="wrap section" id="plan">
+      <div class="section-head"><div class="eyebrow">04 · Мини-план</div><h2>Твой набор настроек.</h2><p>Отметь то, что хочешь попробовать. Отметки сохраняются только на этой странице и никуда не отправляются.</p></div>
+      <div class="plan"><div class="plan-grid">
+        <div class="checks" aria-label="Выбор цифровых настроек">
+          <label class="check"><input type="checkbox"><span>Отключить одно необязательное уведомление</span></label>
+          <label class="check"><input type="checkbox"><span>Выбрать время для проверки чатов</span></label>
+          <label class="check"><input type="checkbox"><span>Настроить спокойный режим перед сном</span></label>
+          <label class="check"><input type="checkbox"><span>Убрать телефон из поля зрения на время учёбы</span></label>
+          <label class="check"><input type="checkbox"><span>Скрыть один источник лишнего шума</span></label>
+        </div>
+        <aside class="plan-result" aria-live="polite"><h3>Без перегруза</h3><p>Достаточно выбрать один небольшой шаг. Посмотри через несколько дней, удобно ли тебе стало.</p><div class="meter" aria-hidden="true"><span id="meter"></span></div><div class="count" id="count">Выбрано: 0 из 5</div></aside>
+      </div></div>
+    </section>
+
+    <section class="wrap section" id="sources">
+      <div class="section-head"><div class="eyebrow">05 · Источники</div><h2>Откуда рекомендации.</h2><p>Памятка подготовлена для школьного индивидуального проекта. Подробнее об основаниях и ограничениях — в списке литературы.</p></div>
+      <div class="sources">
+        <details><summary>[1] Всемирная организация здравоохранения, Европейское региональное бюро. Цифровые факторы психического здоровья молодых людей, 2025</summary><p>Обзор рассматривает как возможную пользу, так и риски цифровой среды и подчёркивает, что связи зависят от контекста и могут быть двусторонними. <a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2025-12187-51959-79685/" target="_blank" rel="noreferrer">Открыть публикацию ВОЗ ↗</a></p></details>
+        <details><summary>[2] Steele, Hall и Christofferson. Модель цифрового стресса у подростков и молодых взрослых, 2020</summary><p>Обзор выделяет, среди прочего, давление постоянной доступности, страх пропустить события и перегрузку коммуникацией. <a href="https://doi.org/10.1007/s10567-019-00300-5" target="_blank" rel="noreferrer">Открыть статью ↗</a></p></details>
+        <details><summary>[3] Американская психологическая ассоциация. Рекомендации по использованию социальных сетей подростками, 2023</summary><p>Рекомендации затрагивают сон, физическую активность, безопасное использование и индивидуальные особенности подростков. <a href="https://www.apa.org/topics/social-media-internet/health-advisory-adolescent-social-media-use" target="_blank" rel="noreferrer">Открыть рекомендации APA ↗</a></p></details>
+        <details><summary>Дополнительные обзоры, использованные в проекте</summary><p><a href="https://doi.org/10.1186/s40359-023-01166-7" target="_blank" rel="noreferrer">Экранное время и психическое здоровье подростков, систематический обзор, 2023</a> · <a href="https://doi.org/10.1016/j.chbr.2024.100404" target="_blank" rel="noreferrer">Социальные сети и благополучие подростков, umbrella review, 2024</a> · <a href="https://doi.org/10.1111/jsr.13899" target="_blank" rel="noreferrer">Устройства, сон и благополучие: обзор проспективных исследований, 2023</a></p></details>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap footline"><div><strong>Тише в цифре</strong><br><span class="small">Информационный сайт-памятка · индивидуальный проект · 2026</span></div><div>Материал не заменяет консультацию специалиста.<br>Тамбов · 2026</div></div></footer>
+  <script>
+    const boxes = [...document.querySelectorAll('.checks input[type="checkbox"]')];
+    const count = document.getElementById('count');
+    const meter = document.getElementById('meter');
+    function updatePlan() {
+      const selected = boxes.filter(box => box.checked).length;
+      count.textContent = `Выбрано: ${selected} из ${boxes.length}`;
+      meter.style.width = `${selected / boxes.length * 100}%`;
+    }
+    boxes.forEach(box => box.addEventListener('change', updatePlan));
+  </script>
+</body>
+</html>

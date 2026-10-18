@@ -2,6 +2,18 @@ const boxes = [...document.querySelectorAll('.checks input[type="checkbox"]')];
 const count = document.getElementById('count');
 const meter = document.getElementById('meter');
 const storageKey = 'digital-noise-guide-plan-v1';
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+document.querySelectorAll('a[data-smooth-scroll]').forEach(link => {
+  link.addEventListener('click', event => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
+    history.replaceState(null, '', link.getAttribute('href'));
+  });
+});
 
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');

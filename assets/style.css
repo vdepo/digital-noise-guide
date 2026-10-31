@@ -167,7 +167,7 @@
     .button.secondary:hover { background: var(--card-hover-bg); box-shadow: inset 0 0 0 1px var(--border), var(--shadow-md); }
 
     .hero-art { position: relative; min-height: 420px; display: grid; place-items: center; overflow: hidden; border-radius: 28px; background: var(--hero-art-bg); box-shadow: var(--shadow-lg); isolation: isolate; }
-    .hero-art::before { content: "0 1 0 / SIGNAL LOST / 1 0 1"; position: absolute; top: 22px; left: 24px; z-index: 2; color: var(--art-caption); opacity: .7; font: 10px var(--mono); letter-spacing: .08em; }
+    .hero-art::before { content: "0 1 0 / СИГНАЛ ≠ ШУМ / 1 0 1"; position: absolute; top: 22px; left: 24px; z-index: 2; color: var(--art-caption); opacity: .7; font: 10px var(--mono); letter-spacing: .08em; }
     .hero-art::after { content: ""; position: absolute; left: 0; right: 0; top: 52%; height: 2px; background: var(--art-line); opacity: .8; transform: rotate(-7deg); }
     .orb { position: absolute; width: 300px; aspect-ratio: 1; border-radius: 50%; background: var(--orb-bg); box-shadow: var(--orb-shadow); }
     .ring { position: absolute; width: 385px; height: 120px; border: 1px solid var(--ring-color); border-radius: 50%; transform: rotate(-24deg); }
@@ -322,3 +322,13 @@
     .reset:focus-visible, .cite:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .reset[hidden] { display: none; }
     @media print { .reset { display: none !important; } .cite { color: inherit; } }
+
+    /* Увеличенная область нажатия: внешний вид не меняется */
+    .brand, .nav-links a, .cite { position: relative; }
+    .brand::after, .nav-links a::after, .cite::after { content: ""; position: absolute; }
+    .brand::after { inset: -10px 0; }
+    .nav-links a::after { inset: -8px 0; }
+    .cite::after { inset: -14px -3px; }
+    @media (min-width: 441px) and (max-width: 760px) { .nav-links { padding-block: 12px; margin-block: -12px; } }
+    @media (max-width: 440px) { .brand::after { inset: -9px 0 -2px; } .nav-links a::after { inset: -6px 0 -10px; } }
+    @media print { .brand::after, .nav-links a::after, .cite::after { display: none; } }

@@ -225,8 +225,8 @@
       nav { padding: 0 16px; }
       .wrap { width: min(100% - 28px, 1060px); }
       .hero { min-height: initial; padding: 64px 0 42px; grid-template-columns: 1fr; gap: 35px; }
-      .hero-art { min-height: 300px; }
-      .orb { width: 210px; margin-top: -18px; }.ring { width: 300px; }.ring.r2 { width: 330px; }
+      .hero-art { min-height: 320px; }
+      .orb { width: 200px; margin-top: 24px; }.ring { width: 300px; }.ring.r2 { width: 330px; }
       .section { padding: 50px 0; }
       .cards { grid-template-columns: 1fr; }
       .card { min-height: initial; }
@@ -255,4 +255,47 @@
     @media (min-width: 441px) and (max-width: 760px) {
       .nav-links { max-width: calc(100vw - 150px); gap: 15px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+
+    /* Улучшения: типографика, доступность, анимации, печать */
+    h1, h2, h3, summary { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    a, button, summary, .check { -webkit-tap-highlight-color: transparent; }
+    .skip-link { position: absolute; left: 12px; top: -60px; z-index: 20; padding: 10px 16px; border-radius: 999px; background: var(--button-bg); color: #fff; font-size: 14px; font-weight: 600; transition: top .2s ease; }
+    .skip-link:focus { top: calc(10px + env(safe-area-inset-top)); text-decoration: none; }
+    .button:active { transform: scale(.98); }
+    .nav-links a { padding: 4px 10px; margin: -4px -10px; border-radius: 999px; transition: color .18s ease, background .18s ease; }
+    .nav-links a[aria-current="true"] { color: var(--accent); background: var(--chip-1); }
+    .card .icon svg { display: block; }
+    summary { list-style: none; display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: ""; flex: none; width: 9px; height: 9px; margin: 6px 4px 0 0; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(45deg); transition: transform .2s ease; }
+    details[open] summary::after { transform: translate(0, 3px) rotate(-135deg); }
+    .check input:checked + span { color: var(--ink); font-weight: 550; }
+    .orb { animation: float 7s ease-in-out infinite; }
+    .ring { animation: drift 14s ease-in-out infinite alternate; }
+    .ring.r2 { animation-name: drift2; animation-duration: 18s; }
+    @keyframes float { 50% { transform: translateY(-10px); } }
+    @keyframes drift { to { transform: rotate(-18deg) scale(1.03); } }
+    @keyframes drift2 { to { transform: rotate(38deg) scale(.97); } }
+    .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+    .js .reveal.is-visible { opacity: 1; transform: none; }
+    @media (max-width: 440px) { .nav-links a { padding: 4px 7px; margin: -4px -7px; } }
+    @media (max-width: 350px) { .nav-links a { padding: 4px 4px; margin: -4px -4px; } }
+    @media print {
+      :root { color-scheme: light; }
+      html, body { background: #fff !important; color: #000; }
+      .nav-wrap, .hero-art, .actions, .skip-link { display: none !important; }
+      .hero { min-height: 0; padding: 0 0 16px; grid-template-columns: 1fr; }
+      h1 { color: #000; background: none; font-size: 40px; }
+      .section { padding: 18px 0; break-inside: avoid-page; }
+      .section h2 { font-size: 26px; }
+      .card, .step, .plan, .plan-result, .check, details, .note { box-shadow: none !important; border: 1px solid #ccc; background: #fff !important; transform: none !important; }
+      .definition { background: #fff; color: #000; border: 1px solid #ccc; box-shadow: none; }
+      .definition .label { color: #555; }
+      .definition::after, .hero-art::after { display: none; }
+      .cards, .steps { grid-template-columns: 1fr 1fr; }
+      .js .reveal { opacity: 1; transform: none; }
+      a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 11px; color: #555; word-break: break-all; }
+      footer { background: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; } .js .reveal { opacity: 1; transform: none; } }

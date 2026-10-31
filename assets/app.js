@@ -22,9 +22,22 @@ try {
   // Хранилище может быть отключено; чек-лист при этом продолжит работать.
 }
 
+const hint = document.getElementById('plan-hint');
+const resetButton = document.getElementById('plan-reset');
+const defaultHint = hint ? hint.textContent : '';
+
+function hintFor(selected) {
+  if (selected === 0) return defaultHint;
+  if (selected <= 2) return 'Хорошее начало. Попробуй выбранное несколько дней и посмотри, удобно ли тебе.';
+  if (selected < boxes.length) return 'Неплохой набор. Если станет тяжело, оставь один-два шага и начни с них.';
+  return 'Выбрано всё. Не обязательно начинать сразу со всего: пробуй по одному шагу.';
+}
+
 function updatePlan() {
   const selected = boxes.filter(box => box.checked).length;
   count.textContent = `Выбрано: ${selected} из ${boxes.length}`;
+  if (hint) hint.textContent = hintFor(selected);
+  if (resetButton) resetButton.hidden = selected === 0;
   meter.style.width = `${selected / boxes.length * 100}%`;
   meter.parentElement.setAttribute('aria-label', `Выбрано ${selected} из ${boxes.length}`);
   meter.parentElement.setAttribute('aria-valuenow', String(selected));
@@ -36,6 +49,25 @@ function updatePlan() {
 }
 
 boxes.forEach(box => box.addEventListener('change', updatePlan));
+resetButton?.addEventListener('click', () => {
+  boxes.forEach(box => { box.checked = false; });
+  updatePlan();
+  boxes[0]?.focus();
+});
+
+// Ссылки [1], [2], [3] раскрывают нужный источник
+function openSource(id) {
+  const item = document.getElementById(id);
+  if (!item || item.tagName !== 'DETAILS') return;
+  item.open = true;
+  item.classList.remove('is-cited');
+  void item.offsetWidth;
+  item.classList.add('is-cited');
+}
+document.querySelectorAll('a.cite').forEach(link => {
+  link.addEventListener('click', () => openSource(link.getAttribute('href').slice(1)));
+});
+if (location.hash.startsWith('#src-')) openSource(location.hash.slice(1));
 updatePlan();
 
 // Плавное появление блоков при прокрутке

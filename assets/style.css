@@ -3,6 +3,7 @@
       color-scheme: light;
       --top: #eceefb;            /* цвет зоны статус-бара и верха навигации (= theme-color) */
       --nav-bottom: #f1f1fb;
+      --nav-glass: rgba(241,241,251,.88);
       --paper: #f6f6fa;
       --ink: #1d1d2b;
       --muted: #5f6072;
@@ -57,6 +58,7 @@
         color-scheme: dark;
         --top: #16161c;
         --nav-bottom: #1a1a22;
+        --nav-glass: rgba(26,26,34,.88);
         --paper: #121217;
         --ink: #f2f2f7;
         --muted: #a5a5b8;
@@ -130,6 +132,14 @@
       background: linear-gradient(180deg, var(--top) 0%, var(--nav-bottom) 100%);
       border-bottom: 1px solid var(--line);
       box-shadow: 0 6px 20px rgba(30,30,80,.04);
+    }
+    /* Лёгкое стекло только для верхней панели: верх сплошной (= theme-color), ниже — 85% непрозрачности */
+    @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .nav-wrap {
+        background: linear-gradient(180deg, var(--top) 0, var(--top) env(safe-area-inset-top), var(--nav-glass) calc(env(safe-area-inset-top) + 18px), var(--nav-glass) 100%);
+        -webkit-backdrop-filter: saturate(150%) blur(14px);
+        backdrop-filter: saturate(150%) blur(14px);
+      }
     }
     nav { max-width: 1100px; min-height: 54px; margin: auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
     .brand { font-size: 15px; font-weight: 650; color: var(--ink); letter-spacing: -.02em; white-space: nowrap; }

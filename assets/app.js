@@ -129,7 +129,10 @@ window.addEventListener('afterprint', () => {
 
   let W = 0, H = 0, heroH = 1, lines = 9, points = [], colors = {};
   let level = quiet ? 0 : 1; // 1 — шум, 0 — тишина
-  let t = 0, last = 0, raf = 0, visible = true;
+  let t = 0, last = 0, raf = 0, timer = 0, visible = true, scrolling = false, scrollIdle = 0, calm = 1;
+  const frameGap = 1000 / 30; // точкам хватает 30 кадров в секунду: вдвое-вчетверо меньше работы
+  // На телефонах анимация замирает, пока страницу листают, чтобы прокрутке ничего не мешало
+  const pauseOnScroll = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
   function random(seed) {
     return () => {
@@ -200,22 +203,32 @@ window.addEventListener('afterprint', () => {
     ctx.globalAlpha = 1;
   }
 
-  const scrollCalm = () => still ? 1 : 1 - .75 * Math.min(1, Math.max(0, window.scrollY / (heroH * .9)));
-  const render = () => draw(level * scrollCalm());
+  // Чем ниже прокрутили главный экран, тем спокойнее точки
+  const calmTarget = () => still ? 1 : 1 - .75 * Math.min(1, Math.max(0, window.scrollY / (heroH * .9)));
+  const render = () => draw(level * calm);
+  const canRun = () => !still && visible && !scrolling && !document.hidden;
 
+  function stop() {
+    cancelAnimationFrame(raf); clearTimeout(timer);
+    raf = timer = 0;
+  }
   function frame(now) {
     raf = 0;
     const dt = last ? Math.min(.05, (now - last) / 1000) : 0;
     last = now; t += dt;
     level += ((quiet ? 0 : 1) - level) * (1 - Math.exp(-dt * 1.8));
+    calm += (calmTarget() - calm) * (1 - Math.exp(-dt * 3));
     render();
-    if (visible) raf = requestAnimationFrame(frame);
+    if (!canRun()) return;
+    const wait = Math.max(0, frameGap - (performance.now() - now) - 4);
+    timer = setTimeout(() => { timer = 0; raf = requestAnimationFrame(frame); }, wait);
   }
-  function start() { if (!still && visible && !raf) { last = 0; raf = requestAnimationFrame(frame); } }
+  function start() { if (canRun() && !raf && !timer) { last = 0; raf = requestAnimationFrame(frame); } }
 
   function sync() { if (toggle) toggle.setAttribute('aria-pressed', String(quiet)); }
 
   readColors(); build();
+  calm = calmTarget();
   if (still) { level = quiet ? 0 : .55; t = 1.2; }
   render();
   figure.classList.add('is-live');
@@ -233,7 +246,19 @@ window.addEventListener('afterprint', () => {
   if ('ResizeObserver' in window) new ResizeObserver(() => { build(); render(); }).observe(canvas);
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { readColors(); render(); });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => { visible = entries[0].isIntersecting; if (visible) start(); }).observe(canvas);
+    new IntersectionObserver(entries => {
+      visible = entries[entries.length - 1].isIntersecting;
+      if (visible) start(); else stop();
+    }).observe(canvas);
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+  if (pauseOnScroll && !still) {
+    window.addEventListener('scroll', () => {
+      scrolling = true;
+      stop();
+      clearTimeout(scrollIdle);
+      scrollIdle = setTimeout(() => { scrolling = false; start(); }, 200);
+    }, { passive: true });
   }
   if (still) window.addEventListener('resize', () => { build(); render(); });
   start();

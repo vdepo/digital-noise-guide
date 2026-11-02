@@ -70,8 +70,10 @@ document.querySelectorAll('a.cite').forEach(link => {
 if (location.hash.startsWith('#src-')) openSource(location.hash.slice(1));
 updatePlan();
 
-// Плавное появление блоков при прокрутке
-if ('IntersectionObserver' in window && !reduceMotion.matches) {
+// Плавное появление блоков при прокрутке. Только с мышью или тачпадом:
+// на телефоне свайп обгоняет любую анимацию, и текст проявлялся с опозданием, уже на экране
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if ('IntersectionObserver' in window && !reduceMotion.matches && finePointer) {
   document.documentElement.classList.add('js');
   const revealItems = document.querySelectorAll('.section-head, .definition, .film, .card, .step, .note, .plan, .sources details');
   const revealObserver = new IntersectionObserver(entries => {
@@ -127,12 +129,10 @@ window.addEventListener('afterprint', () => {
   let quiet = false;
   try { quiet = localStorage.getItem(quietKey) === '1'; } catch { /* настройка просто не запомнится */ }
 
-  let W = 0, H = 0, heroH = 1, lines = 9, points = [], colors = {};
+  let W = 0, H = 0, heroH = 1, lines = 9, mid = 4, points = [], colors = {}, gradient = null;
+  let plain = new Float32Array(0), signal = new Float32Array(0); // координаты точек: без нового мусора на каждом кадре
   let level = quiet ? 0 : 1; // 1 — шум, 0 — тишина
-  let t = 0, last = 0, raf = 0, timer = 0, visible = true, scrolling = false, scrollIdle = 0, calm = 1;
-  const frameGap = 1000 / 30; // точкам хватает 30 кадров в секунду: вдвое-вчетверо меньше работы
-  // На телефонах анимация замирает, пока страницу листают, чтобы прокрутке ничего не мешало
-  const pauseOnScroll = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  let t = 0, last = 0, raf = 0, visible = true, calm = 1, busyUntil = 0;
 
   function random(seed) {
     return () => {
@@ -147,6 +147,7 @@ window.addEventListener('afterprint', () => {
     const cs = getComputedStyle(document.documentElement);
     const v = (name, fallback) => cs.getPropertyValue(name).trim() || fallback;
     colors = { ink: v('--ink', '#17152b'), violet: v('--violet', '#5b4ddb'), mint: v('--mint', '#2fb894') };
+    gradient = null;
   }
 
   function build() {
@@ -157,73 +158,91 @@ window.addEventListener('afterprint', () => {
     canvas.height = Math.max(1, Math.round(H * dpr));
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     lines = W < 520 ? 7 : 9;
+    mid = (lines - 1) / 2;
     const perLine = Math.round(Math.min(84, Math.max(40, W / 7)));
+    const mx = W * .05, my = H * .1, spanX = W - mx * 2, spanY = H - my * 2, gap = spanY * .62 / (lines - 1);
     const rand = random(20261102);
     points = [];
     for (let l = 0; l < lines; l++) {
       for (let i = 0; i < perLine; i++) {
-        points.push({ l, u: i / (perLine - 1), sx: rand(), sy: rand(), a: rand() * 6.283, b: rand() * 6.283, fa: .5 + rand() * .9, fb: .4 + rand() * .8, lag: rand() });
+        // Всё, что не меняется от кадра к кадру, считаем один раз
+        const u = i / (perLine - 1), env = Math.pow(Math.sin(Math.PI * u), 1.3);
+        points.push({
+          cx: mx + u * spanX, cy: H / 2 + (l - mid) * gap * (.28 + .72 * env), wave: H * .055 * env, phase: u * 7.5 + l * .5,
+          sx: mx + rand() * spanX, sy: my + rand() * spanY, a: rand() * 6.283, b: rand() * 6.283, fa: .5 + rand() * .9, fb: .4 + rand() * .8, lag: rand(),
+          signal: l === mid
+        });
       }
     }
+    plain = new Float32Array((lines - 1) * perLine * 2);
+    signal = new Float32Array(perLine * 2);
+    gradient = null;
+  }
+
+  function dots(list, count, r) {
+    ctx.beginPath();
+    for (let i = 0; i < count; i += 2) { ctx.moveTo(list[i] + r, list[i + 1]); ctx.arc(list[i], list[i + 1], r, 0, 6.283); }
+    ctx.fill();
   }
 
   function draw(n) {
     ctx.clearRect(0, 0, W, H);
     if (!W || !H) return;
-    const mx = W * .05, my = H * .1, spanX = W - mx * 2, spanY = H - my * 2;
-    const mid = (lines - 1) / 2, gap = spanY * .62 / (lines - 1), amp = H * .055;
-    const normal = [], signal = [];
+    const wt = t * .55;
+    let a = 0, s = 0;
     for (const p of points) {
-      const env = Math.pow(Math.sin(Math.PI * p.u), 1.3);
-      const cx = mx + p.u * spanX;
-      const cy = H / 2 + (p.l - mid) * gap * (.28 + .72 * env) + amp * env * Math.sin(p.u * 7.5 + t * .55 + p.l * .5);
-      const nx = mx + p.sx * spanX + 10 * Math.sin(t * p.fa + p.a) + 4 * Math.sin(t * 3.1 * p.fb + p.b);
-      const ny = my + p.sy * spanY + 10 * Math.cos(t * p.fb + p.b) + 4 * Math.cos(t * 2.7 * p.fa + p.a);
+      let x = p.cx, y = p.cy + p.wave * Math.sin(p.phase + wt);
       const k = Math.min(1, Math.max(0, n * 1.35 - p.lag * .35)); // точки успокаиваются не одновременно
-      const e = k * k * (3 - 2 * k);
-      (p.l === mid ? signal : normal).push(cx + (nx - cx) * e, cy + (ny - cy) * e);
+      if (k > 0) {
+        const e = k * k * (3 - 2 * k);
+        const nx = p.sx + 10 * Math.sin(t * p.fa + p.a) + 4 * Math.sin(t * 3.1 * p.fb + p.b);
+        const ny = p.sy + 10 * Math.cos(t * p.fb + p.b) + 4 * Math.cos(t * 2.7 * p.fa + p.a);
+        x += (nx - x) * e; y += (ny - y) * e;
+      }
+      if (p.signal) { signal[s++] = x; signal[s++] = y; } else { plain[a++] = x; plain[a++] = y; }
     }
-    const dots = (list, r) => { ctx.beginPath(); for (let i = 0; i < list.length; i += 2) { ctx.moveTo(list[i] + r, list[i + 1]); ctx.arc(list[i], list[i + 1], r, 0, 6.283); } ctx.fill(); };
+    if (!gradient) {
+      gradient = ctx.createLinearGradient(W * .05, 0, W * .95, 0);
+      gradient.addColorStop(0, colors.violet); gradient.addColorStop(1, colors.mint);
+    }
     ctx.globalAlpha = .2 + .3 * (1 - n);
     ctx.fillStyle = colors.ink;
-    dots(normal, 1.3);
-    const g = ctx.createLinearGradient(mx, 0, W - mx, 0);
-    g.addColorStop(0, colors.violet); g.addColorStop(1, colors.mint);
+    dots(plain, a, 1.3);
     const lineAlpha = Math.max(0, 1 - n / .55);
-    if (lineAlpha > 0) {
+    if (lineAlpha > 0 && s) {
       ctx.globalAlpha = lineAlpha * .9;
-      ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.strokeStyle = gradient; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
       ctx.beginPath();
-      for (let i = 0; i < signal.length; i += 2) { if (i) ctx.lineTo(signal[i], signal[i + 1]); else ctx.moveTo(signal[i], signal[i + 1]); }
+      ctx.moveTo(signal[0], signal[1]);
+      for (let i = 2; i < s; i += 2) ctx.lineTo(signal[i], signal[i + 1]);
       ctx.stroke();
     }
     ctx.globalAlpha = .95;
-    ctx.fillStyle = g;
-    dots(signal, 2.1);
+    ctx.fillStyle = gradient;
+    dots(signal, s, 2.1);
     ctx.globalAlpha = 1;
   }
 
   // Чем ниже прокрутили главный экран, тем спокойнее точки
   const calmTarget = () => still ? 1 : 1 - .75 * Math.min(1, Math.max(0, window.scrollY / (heroH * .9)));
   const render = () => draw(level * calm);
-  const canRun = () => !still && visible && !scrolling && !document.hidden;
 
-  function stop() {
-    cancelAnimationFrame(raf); clearTimeout(timer);
-    raf = timer = 0;
-  }
+  // Точки не замирают, даже пока страницу листают. Когда они перестраиваются (переключатель,
+  // прокрутка главного экрана), рисуем каждый кадр экрана, на 120 Гц — через один.
+  // Когда просто плавают, хватает 30 кадров в секунду: такое медленное движение глаз не отличит
   function frame(now) {
-    raf = 0;
+    raf = requestAnimationFrame(frame);
+    const target = quiet ? 0 : 1, ct = calmTarget();
+    if (Math.abs(target - level) > .005 || Math.abs(ct - calm) > .005) busyUntil = now + 600;
+    if (last && now - last < (now < busyUntil ? 10 : 26)) return;
     const dt = last ? Math.min(.05, (now - last) / 1000) : 0;
     last = now; t += dt;
-    level += ((quiet ? 0 : 1) - level) * (1 - Math.exp(-dt * 1.8));
-    calm += (calmTarget() - calm) * (1 - Math.exp(-dt * 3));
+    level += (target - level) * (1 - Math.exp(-dt * 1.8));
+    calm += (ct - calm) * (1 - Math.exp(-dt * 3));
     render();
-    if (!canRun()) return;
-    const wait = Math.max(0, frameGap - (performance.now() - now) - 4);
-    timer = setTimeout(() => { timer = 0; raf = requestAnimationFrame(frame); }, wait);
   }
-  function start() { if (canRun() && !raf && !timer) { last = 0; raf = requestAnimationFrame(frame); } }
+  function start() { if (!still && visible && !document.hidden && !raf) { last = 0; raf = requestAnimationFrame(frame); } }
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
 
   function sync() { if (toggle) toggle.setAttribute('aria-pressed', String(quiet)); }
 
@@ -252,14 +271,6 @@ window.addEventListener('afterprint', () => {
     }).observe(canvas);
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-  if (pauseOnScroll && !still) {
-    window.addEventListener('scroll', () => {
-      scrolling = true;
-      stop();
-      clearTimeout(scrollIdle);
-      scrollIdle = setTimeout(() => { scrolling = false; start(); }, 200);
-    }, { passive: true });
-  }
   if (still) window.addEventListener('resize', () => { build(); render(); });
   start();
 })();

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-mode="noise">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f6f5fb" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0e0d16" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4511e" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#3b1607" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="Небольшая памятка о цифровом шуме: как замечать лишние сигналы и настраивать цифровую среду под себя.">
   <meta property="og:type" content="website">
@@ -12,7 +12,7 @@
   <meta property="og:title" content="Тише в цифре — памятка о цифровом шуме">
   <meta property="og:description" content="Как замечать лишние сигналы и настраивать цифровую среду под себя.">
   <meta property="og:url" content="https://vdepo.github.io/digital-noise-guide/">
-  <meta property="og:image" content="https://vdepo.github.io/digital-noise-guide/assets/og.png?v=6">
+  <meta property="og:image" content="https://vdepo.github.io/digital-noise-guide/assets/og.png?v=7">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Тише в цифре — памятка о цифровом шуме">
@@ -22,105 +22,184 @@
   <link rel="alternate icon" href="assets/favicon.svg?v=6">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=6">
   <meta name="apple-mobile-web-app-title" content="Тише в цифре">
-  <link rel="preload" href="assets/fonts/cormorant-garamond-n600-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/onest-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/style.css?v=8">
+  <link rel="preload" href="assets/fonts/geist-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/geist-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <script>try{if(localStorage.getItem('digital-noise-guide-quiet-v1')==='1')document.documentElement.dataset.mode='quiet'}catch(e){}</script>
+  <link rel="stylesheet" href="assets/style.css?v=9">
 </head>
 <body>
   <a class="skip-link" href="#noise">Перейти к содержанию</a>
-  <div class="nav-wrap">
-    <nav aria-label="Основная навигация">
-      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="28" height="28"><path d="M4 12c3-5 6 5 9 0s6 5 9 0 5 3 6 1" /><path class="calm" d="M4 20c4-2.4 8 2.4 12 0s8 2.4 12 0" /></svg></span>Тише в цифре</a>
-      <div class="nav-links">
-        <a href="#noise">О шуме</a><a href="#signals">Проявления</a><a href="#steps">Советы</a><a href="#plan">Мини-план</a>
+
+  <header class="hero" id="top">
+    <svg class="hero-waves" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true"><path d="M0 110c150-80 300 80 450 0s300 80 450 0 225 50 300 10"/><path d="M0 150c150-60 300 60 450 0s300 60 450 0 225 40 300 8"/><path class="sig" d="M0 180c150-45 300 45 450 0s300 45 450 0 225 30 300 6"/><path d="M0 210c150-60 300 60 450 0s300 60 450 0 225 40 300 8"/><path d="M0 250c150-80 300 80 450 0s300 80 450 0 225 50 300 10"/></svg>
+    <canvas id="signal" class="hero-signal" role="img" aria-label="Точки хаотично мечутся, как цифровой шум. Если сделать тише, они выстраиваются в спокойные волны, а важный сигнал выделяется цветом."></canvas>
+    <span class="probe" data-probe="dot" aria-hidden="true"></span><span class="probe" data-probe="a" aria-hidden="true"></span><span class="probe" data-probe="b" aria-hidden="true"></span>
+
+    <div class="topbar">
+      <a class="mark" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="noisy" d="M4 12c3-5 6 5 9 0s6 5 9 0 5 3 6 1"/><path class="calm" d="M4 20c4-2.4 8 2.4 12 0s8 2.4 12 0"/></svg>тише в цифре</a>
+      <a class="pill" href="#plan" data-smooth-scroll><span class="pill-tag">мини-план</span><span class="pill-text">твой набор настроек<span class="pill-sep" aria-hidden="true"> · </span><span class="pill-tagline">отметки остаются у тебя</span></span><svg class="pill-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+      <nav class="topnav" aria-label="Основная навигация">
+        <a href="#noise" data-smooth-scroll>О шуме</a><a href="#signals" data-smooth-scroll>Проявления</a><a href="#steps" data-smooth-scroll>Советы</a><a href="#plan" data-smooth-scroll>Мини-план</a>
+      </nav>
+    </div>
+
+    <div class="hero-main">
+      <div class="hero-body">
+        <p class="eyebrow">Небольшая памятка о цифровой среде</p>
+        <h1 class="hero-headline">Чуть тише.<br> Чуть <span class="emph">легче.</span></h1>
+        <p class="hero-sub">Цифровые устройства помогают учиться и быть на связи. Иногда сигналов становится слишком много. <strong>Разберись, что отвлекает именно тебя, и настрой среду под себя.</strong></p>
+        <div class="hero-actions"><a class="btn" href="#steps" data-smooth-scroll>Начать с малого <span aria-hidden="true">↓</span></a><a class="btn btn-ghost" href="#noise" data-smooth-scroll>Что мы называем шумом</a></div>
       </div>
-    </nav>
+      <aside class="hero-video" aria-label="Видео о памятке">
+        <video id="hero-vid" class="hero-video-media" muted loop playsinline preload="metadata" poster="assets/brag-poster.jpg?v=1" width="720" height="1280" aria-describedby="hero-vid-desc"><source src="assets/brag.mp4?v=1" type="video/mp4"></video>
+        <p class="sr-only" id="hero-vid-desc">Ролик на 20 секунд: экран заполняют уведомления, режим «Тише» их успокаивает, дальше — один шаг из советов и мини-план. Звук включается отдельно.</p>
+        <div class="hero-controls">
+          <button id="hero-playback" class="hero-control hero-playback" type="button" aria-label="Включить видео" title="Включить видео" data-mode="play"><svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg></button>
+          <button id="hero-mute" class="hero-control hero-mute" type="button" aria-label="Включить звук" aria-pressed="true"><svg class="icon-muted" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.59 3l2.7-2.7-1.41-1.42L15.17 10.6 12.46 7.88l-1.41 1.41 2.71 2.71-2.71 2.71 1.41 1.41 2.71-2.7 2.71 2.7 1.41-1.41-2.7-2.7z"/></svg><svg class="icon-sound" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm10.5 3a4.5 4.5 0 00-2.5-4.03v8.05A4.5 4.5 0 0013.5 12zm-2.5-9v2.06A7 7 0 0117 12a7 7 0 01-6 6.92V21A9 9 0 0019 12 9 9 0 0011 3z"/></svg><span class="hero-mute-label">со звуком</span></button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="hero-foot">
+      <aside class="quiet-card" aria-labelledby="quiet-title">
+        <h2 class="quiet-title" id="quiet-title">Не выключать всё.<br> <em>Выбрать важное.</em></h2>
+        <p class="quiet-copy">Включи режим «Тише»: бегущая строка замрёт, видео встанет на паузу, а точки выстроятся в спокойные волны.</p>
+        <button class="quiet-toggle quiet-go" type="button" aria-pressed="false" hidden><span>Режим «Тише»</span><span class="switch" aria-hidden="true"></span></button>
+        <ul class="facts"><li>без трекеров</li><li>без регистрации</li><li>отметки — только у тебя</li></ul>
+      </aside>
+      <p class="hero-meta"><span class="dot" aria-hidden="true"></span><span class="when-noise">сейчас: шумно</span><span class="when-quiet">сейчас: тише</span><br>памятка · индивидуальный проект · 2026</p>
+    </div>
+  </header>
+
+  <nav class="dock" aria-label="Разделы памятки">
+    <a class="dock-mark" href="#top" data-smooth-scroll aria-label="Наверх"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="noisy" d="M4 12c3-5 6 5 9 0s6 5 9 0 5 3 6 1"/><path class="calm" d="M4 20c4-2.4 8 2.4 12 0s8 2.4 12 0"/></svg></a>
+    <a href="#noise" data-smooth-scroll>шум</a><a href="#signals" data-smooth-scroll>сигналы</a><a href="#steps" data-smooth-scroll>советы</a><a href="#plan" data-smooth-scroll>план</a><a class="dock-wide" href="#sources" data-smooth-scroll>источники</a>
+    <button class="quiet-toggle dock-toggle" type="button" aria-pressed="false" aria-label="Режим «Тише»" hidden><span class="dock-toggle-label" aria-hidden="true">тише</span><span class="switch" aria-hidden="true"></span></button>
+  </nav>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <ul class="ticker-list">
+        <li>чат класса · 27 новых</li>
+        <li>кто-то печатает<span class="dots"></span></li>
+        <li>новое видео в рекомендациях</li>
+        <li class="is-important">мама: позвони, как освободишься</li>
+        <li>+1 реакция на твоё сообщение</li>
+        <li>голосовое · 0:47</li>
+        <li>стрим уже начался</li>
+        <li class="is-important">напоминание: сдать проект</li>
+        <li>ежедневная награда ждёт</li>
+        <li>тебя упомянули в беседе</li>
+        <li>скидка только сегодня</li>
+        <li>доступно обновление</li>
+      </ul>
+    </div>
   </div>
 
-  <main id="top">
-    <header class="hero">
-      <div class="wrap hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">Небольшая памятка о цифровой среде</div>
-          <h1><span class="line">Чуть тише<span class="dot">.</span></span> <span class="line accent">Чуть легче<span class="dot">.</span></span></h1>
-          <p class="lead">Цифровые устройства помогают учиться и быть на связи. Иногда сигналов становится слишком много. Разберись, что отвлекает именно тебя, и настрой среду под себя.</p>
-          <div class="actions"><a class="button" href="#steps" data-smooth-scroll>Начать с малого <span aria-hidden="true">↓</span></a><a class="button secondary" href="#noise">Что мы называем шумом</a></div>
-        </div>
-        <figure class="hero-art">
-          <div class="art-stage">
-            <svg class="art-fallback" viewBox="0 0 600 420" aria-hidden="true" preserveAspectRatio="none"><path d="M30 150c90-70 180 70 270 0s180 70 270 0"/><path d="M30 185c90-55 180 55 270 0s180 55 270 0"/><path class="signal" d="M30 210c90-40 180 40 270 0s180 40 270 0"/><path d="M30 235c90-55 180 55 270 0s180 55 270 0"/><path d="M30 270c90-70 180 70 270 0s180 70 270 0"/></svg>
-            <canvas id="signal" role="img" aria-label="Точки хаотично мечутся, как цифровой шум. Если сделать тише, они выстраиваются в спокойные волны, а важный сигнал выделяется цветом."></canvas>
+  <main id="main">
+    <section class="band band-paper" id="noise" aria-labelledby="noise-title">
+      <div class="band-inner split">
+        <div class="band-copy">
+          <p class="kicker"><span class="num">01</span>Определение</p>
+          <h2 class="title" id="noise-title">Не вся информация&nbsp;— <em>шум.</em></h2>
+          <p class="lede">В проекте используется рабочее определение: оно помогает обсуждать тему, но не является медицинским термином.</p>
+          <div class="definition">
+            <span class="definition-label">Рабочее определение</span>
+            <p><span class="prompt" aria-hidden="true">&gt;</span> <dfn>Цифровой шум</dfn>&nbsp;— поток уведомлений, сообщений и рекомендаций, который отвлекает, перегружает или мешает сосредоточиться на важном.<span class="caret" aria-hidden="true"></span></p>
           </div>
-          <figcaption class="art-caption">
-            <span>Не выключать всё. Выбрать важное.</span>
-            <button class="quiet-toggle" type="button" id="quiet-toggle" aria-pressed="false" hidden><span class="switch" aria-hidden="true"></span>Режим «Тише»</button>
-          </figcaption>
-        </figure>
-      </div>
-    </header>
-
-    <section class="section" id="noise">
-      <div class="wrap section-grid">
-        <div class="index" aria-hidden="true"><span class="num">01</span><span class="label">Определение</span></div>
-        <div class="section-head"><div class="eyebrow mobile-only">01 · Определение</div><h2>Не вся информация&nbsp;— шум.</h2><p>В проекте используется рабочее определение: оно помогает обсуждать тему, но не является медицинским термином.</p></div>
-        <div class="definition"><div class="label">Рабочее определение</div><p><dfn>Цифровой шум</dfn>&nbsp;— поток уведомлений, сообщений и рекомендаций, который отвлекает, перегружает или мешает сосредоточиться на важном.</p></div>
+        </div>
         <figure class="film">
-          <div class="film-frame"><video controls preload="none" playsinline poster="assets/film-poster.jpg?v=2" aria-describedby="film-desc" width="1920" height="1080"><source src="assets/film.mp4" type="video/mp4"></video></div>
+          <div class="screen"><video controls preload="none" playsinline poster="assets/film-poster.jpg?v=2" aria-describedby="film-desc" width="1920" height="1080"><source src="assets/film.mp4" type="video/mp4"></video></div>
           <figcaption id="film-desc"><strong>Цифровой шум за 20 секунд.</strong> Видео без звука и включается только по нажатию: уведомления копятся, лишние гаснут, остаётся важное.</figcaption>
         </figure>
       </div>
     </section>
 
-    <section class="section" id="signals">
-      <div class="wrap section-grid">
-        <div class="index" aria-hidden="true"><span class="num">02</span><span class="label">Заметь сигналы</span></div>
-        <div class="section-head"><div class="eyebrow mobile-only">02 · Заметь сигналы</div><h2>Как это может ощущаться</h2><p>Это повседневные наблюдения, а не тест и не способ поставить себе диагноз.</p></div>
+    <section class="band band-night" id="signals" aria-labelledby="signals-title">
+      <div class="band-inner">
+        <div class="band-head">
+          <div>
+            <p class="kicker"><span class="num">02</span>Заметь сигналы</p>
+            <h2 class="title" id="signals-title">Как это может <em>ощущаться</em></h2>
+          </div>
+          <p class="band-note">Это повседневные наблюдения, а не тест и не способ поставить себе диагноз.</p>
+        </div>
         <div class="cards">
-          <article class="card"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 16c6-9 12-9 18 0s12 9 18 0"/><path class="hit" d="M46 16l4-12 5 24 4-12"/><path d="M67 16c6-9 12-9 18 0"/><path class="hit" d="M93 16l3-9 4 18 3-9"/><path d="M110 16h8"/></svg><div class="card-tag">Внимание</div><h3>Трудно удержать внимание</h3><p>Сообщения и переключения постоянно уводят от одного дела к другому.</p></article>
-          <article class="card"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 16c5-10 10-10 15 0s10 10 15 0 9-6 13 0 8 6 12 0 7-4 10 0 6 4 9 0"/><path class="hit" d="M79 16c4-9 8-9 12 0s8 9 12 0 6-7 9-4"/><circle class="moon" cx="112" cy="6" r="3.2"/></svg><div class="card-tag">Отдых</div><h3>Не получается отдохнуть</h3><p>Хочется проверять экран даже во время паузы или перед сном.</p></article>
-          <article class="card"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 18l8-2 5-9 6 18 5-12 6 8 5-14 6 20 5-13 6 6"/><path class="hit" d="M60 20l5-16 6 24 5-18 6 12 5-8 6 6 5-4 6 2 6-1 6 0"/></svg><div class="card-tag">Напряжение</div><h3>Появляется напряжение</h3><p>Кажется, что нужно сразу отвечать, всё читать или ничего не пропустить.</p></article>
+          <article class="card">
+            <div class="card-media"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 16c6-9 12-9 18 0s12 9 18 0"/><path class="hit" d="M46 16l4-12 5 24 4-12"/><path d="M67 16c6-9 12-9 18 0"/><path class="hit" d="M93 16l3-9 4 18 3-9"/><path d="M110 16h8"/></svg></div>
+            <div class="card-cap"><span class="card-num">01</span><h3 class="card-name">Трудно удержать внимание</h3><span class="card-tag">Внимание</span></div>
+            <p class="card-text">Сообщения и переключения постоянно уводят от одного дела к другому.</p>
+          </article>
+          <article class="card">
+            <div class="card-media"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 16c5-10 10-10 15 0s10 10 15 0 9-6 13 0 8 6 12 0 7-4 10 0 6 4 9 0"/><path class="hit" d="M79 16c4-9 8-9 12 0s8 9 12 0 6-7 9-4"/><circle class="moon" cx="112" cy="6" r="3.2"/></svg></div>
+            <div class="card-cap"><span class="card-num">02</span><h3 class="card-name">Не получается отдохнуть</h3><span class="card-tag">Отдых</span></div>
+            <p class="card-text">Хочется проверять экран даже во время паузы или перед сном.</p>
+          </article>
+          <article class="card">
+            <div class="card-media"><svg class="wave-icon" viewBox="0 0 120 32" aria-hidden="true"><path d="M2 18l8-2 5-9 6 18 5-12 6 8 5-14 6 20 5-13 6 6"/><path class="hit" d="M60 20l5-16 6 24 5-18 6 12 5-8 6 6 5-4 6 2 6-1 6 0"/></svg></div>
+            <div class="card-cap"><span class="card-num">03</span><h3 class="card-name">Появляется напряжение</h3><span class="card-tag">Напряжение</span></div>
+            <p class="card-text">Кажется, что нужно сразу отвечать, всё читать или ничего не пропустить.</p>
+          </article>
         </div>
         <div class="note"><span class="note-label">Важно</span><p>Связь между цифровыми привычками и самочувствием зависит от ситуации и человека. Такие признаки могут иметь разные причины; они сами по себе ничего не диагностируют. [<a class="cite" href="#src-1">1</a>, <a class="cite" href="#src-2">2</a>]</p></div>
       </div>
     </section>
 
-    <section class="section" id="steps">
-      <div class="wrap section-grid">
-        <div class="index" aria-hidden="true"><span class="num">03</span><span class="label">Простые настройки</span></div>
-        <div class="section-head"><div class="eyebrow mobile-only">03 · Простые настройки</div><h2>Попробуй один шаг.</h2><p>Не обязательно менять всё сразу. Оставь нужные уведомления и выбери то, что подходит твоему дню.</p></div>
+    <section class="band band-paper" id="steps" aria-labelledby="steps-title">
+      <div class="band-inner">
+        <div class="band-head">
+          <div>
+            <p class="kicker"><span class="num">03</span>Простые настройки</p>
+            <h2 class="title" id="steps-title">Попробуй <em>один шаг.</em></h2>
+          </div>
+          <p class="band-note">Не обязательно менять всё сразу. Оставь нужные уведомления и выбери то, что подходит твоему дню.</p>
+        </div>
         <ol class="steps">
-          <li class="step"><span class="step-num" aria-hidden="true">1</span><div><div class="step-tag">Уведомления</div><h3>Оставь только важные уведомления</h3><p>Отключи необязательные сигналы, а для близких и важных дел настрой исключения.</p></div></li>
-          <li class="step"><span class="step-num" aria-hidden="true">2</span><div><div class="step-tag">Чаты</div><h3>Собери сообщения в удобное время</h3><p>Выбери паузы для проверки чатов, чтобы не переключаться при каждом сигнале.</p></div></li>
-          <li class="step"><span class="step-num" aria-hidden="true">3</span><div><div class="step-tag">Сон</div><h3>Защити время перед сном</h3><p>Попробуй отложить телефон или включить режим сна. Срочные контакты можно оставить доступными.</p></div></li>
-          <li class="step"><span class="step-num" aria-hidden="true">4</span><div><div class="step-tag">Лента</div><h3>Настрой ленту под себя</h3><p>Скрывай лишнее, отписывайся от источников, после которых чувствуешь перегрузку.</p></div></li>
-          <li class="step"><span class="step-num" aria-hidden="true">5</span><div><div class="step-tag">Учёба</div><h3>Делай короткие паузы</h3><p>Во время учёбы убери телефон из поля зрения или включи фокусирование на одном деле.</p></div></li>
-          <li class="step"><span class="step-num" aria-hidden="true">6</span><div><div class="step-tag">Договорённости</div><h3>Обсуди общие правила</h3><p>Договорись с друзьями и семьёй, когда удобно отвечать и что считать срочным.</p></div></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">1</span><span class="step-tag">Уведомления</span></div><h3>Оставь только важные уведомления</h3><p>Отключи необязательные сигналы, а для близких и важных дел настрой исключения.</p></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">2</span><span class="step-tag">Чаты</span></div><h3>Собери сообщения в удобное время</h3><p>Выбери паузы для проверки чатов, чтобы не переключаться при каждом сигнале.</p></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">3</span><span class="step-tag">Сон</span></div><h3>Защити время перед сном</h3><p>Попробуй отложить телефон или включить режим сна. Срочные контакты можно оставить доступными.</p></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">4</span><span class="step-tag">Лента</span></div><h3>Настрой ленту под себя</h3><p>Скрывай лишнее, отписывайся от источников, после которых чувствуешь перегрузку.</p></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">5</span><span class="step-tag">Учёба</span></div><h3>Делай короткие паузы</h3><p>Во время учёбы убери телефон из поля зрения или включи фокусирование на одном деле.</p></li>
+          <li class="step"><div class="step-top"><span class="step-num" aria-hidden="true">6</span><span class="step-tag">Договорённости</span></div><h3>Обсуди общие правила</h3><p>Договорись с друзьями и семьёй, когда удобно отвечать и что считать срочным.</p></li>
         </ol>
-        <div class="note"><span class="note-label">Без обещаний</span><p>Эти идеи помогают управлять цифровой средой, но не обещают гарантированного улучшения самочувствия. Подходы согласуются с рекомендациями ВОЗ и Американской психологической ассоциации. [<a class="cite" href="#src-1">1</a>, <a class="cite" href="#src-3">3</a>]</p></div>
+        <div class="steps-foot">
+          <div class="note"><span class="note-label">Без обещаний</span><p>Эти идеи помогают управлять цифровой средой, но не обещают гарантированного улучшения самочувствия. Подходы согласуются с рекомендациями ВОЗ и Американской психологической ассоциации. [<a class="cite" href="#src-1">1</a>, <a class="cite" href="#src-3">3</a>]</p></div>
+          <a class="cta" href="#plan" data-smooth-scroll><span class="cta-kicker">Выбрал шаг?</span><span class="cta-word">Собери свой <em>план</em> <span aria-hidden="true">→</span></span></a>
+        </div>
       </div>
     </section>
 
-    <section class="section" id="plan">
-      <div class="wrap section-grid">
-        <div class="index" aria-hidden="true"><span class="num">04</span><span class="label">Мини-план</span></div>
-        <div class="section-head"><div class="eyebrow mobile-only">04 · Мини-план</div><h2>Твой набор настроек.</h2><p>Отметь то, что хочешь попробовать. Отметки сохраняются только на этой странице и никуда не отправляются.</p></div>
-        <div class="plan"><div class="plan-grid">
-          <div class="checks" aria-label="Выбор цифровых настроек">
+    <section class="band band-loud" id="plan" aria-labelledby="plan-title">
+      <div class="band-inner split split-plan">
+        <div class="band-copy">
+          <p class="kicker"><span class="num">04</span>Мини-план</p>
+          <h2 class="title" id="plan-title">Твой набор <em>настроек.</em></h2>
+          <p class="lede">Отметь то, что хочешь попробовать. Отметки сохраняются только на этой странице и никуда не отправляются.</p>
+        </div>
+        <div class="plan">
+          <span class="plan-sticker" aria-hidden="true">только у тебя</span>
+          <div class="plan-bar"><span class="plan-path">~/мини-план</span><button class="copy" type="button" id="plan-copy" hidden>Скопировать план</button></div>
+          <div class="checks" role="group" aria-label="Выбор цифровых настроек">
             <label class="check"><input type="checkbox" name="plan-item-1"><span>Отключить одно необязательное уведомление</span></label>
             <label class="check"><input type="checkbox" name="plan-item-2"><span>Выбрать время для проверки чатов</span></label>
             <label class="check"><input type="checkbox" name="plan-item-3"><span>Настроить спокойный режим перед сном</span></label>
             <label class="check"><input type="checkbox" name="plan-item-4"><span>Убрать телефон из поля зрения на время учёбы</span></label>
             <label class="check"><input type="checkbox" name="plan-item-5"><span>Скрыть один источник лишнего шума</span></label>
           </div>
-          <aside class="plan-result" aria-live="polite"><h3>Без перегруза</h3><p id="plan-hint">Достаточно выбрать один небольшой шаг. Посмотри через несколько дней, удобно ли тебе стало.</p><div class="meter" role="progressbar" aria-label="Выбрано 0 из 5" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><span id="meter"></span></div><div class="plan-foot"><div class="count" id="count">Выбрано: 0 из 5</div><button class="reset" type="button" id="plan-reset" hidden>Сбросить</button></div></aside>
-        </div></div>
+          <div class="plan-result" aria-live="polite"><h3>Без перегруза</h3><p id="plan-hint">Достаточно выбрать один небольшой шаг. Посмотри через несколько дней, удобно ли тебе стало.</p><div class="meter" role="progressbar" aria-label="Выбрано 0 из 5" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><span id="meter"></span></div><div class="plan-foot"><div class="count" id="count">Выбрано: 0 из 5</div><button class="reset" type="button" id="plan-reset" hidden>Сбросить</button></div></div>
+        </div>
       </div>
     </section>
 
-    <section class="section" id="sources">
-      <div class="wrap section-grid">
-        <div class="index" aria-hidden="true"><span class="num">05</span><span class="label">Источники</span></div>
-        <div class="section-head"><div class="eyebrow mobile-only">05 · Источники</div><h2>Откуда рекомендации.</h2><p>Памятка подготовлена для школьного индивидуального проекта. Подробнее об основаниях и ограничениях&nbsp;— в списке литературы.</p></div>
+    <section class="band band-night" id="sources" aria-labelledby="sources-title">
+      <div class="band-inner">
+        <div class="band-head">
+          <div>
+            <p class="kicker"><span class="num">05</span>Источники</p>
+            <h2 class="title" id="sources-title">Откуда <em>рекомендации.</em></h2>
+          </div>
+          <p class="band-note">Памятка подготовлена для школьного индивидуального проекта. Подробнее об основаниях и ограничениях&nbsp;— в списке литературы.</p>
+        </div>
         <div class="sources">
           <details id="src-1"><summary><span class="src-num">1</span><span>Всемирная организация здравоохранения, Европейское региональное бюро. Цифровые факторы психического здоровья молодых людей, 2025</span></summary><p>Обзор рассматривает как возможную пользу, так и риски цифровой среды и подчёркивает, что связи зависят от контекста и могут быть двусторонними. <a href="https://www.who.int/europe/publications/i/item/WHO-EURO-2025-12187-51959-79685/" target="_blank" rel="noreferrer">Открыть публикацию ВОЗ ↗</a></p></details>
           <details id="src-2"><summary><span class="src-num">2</span><span>Steele, Hall и Christofferson. Модель цифрового стресса у подростков и молодых взрослых, 2020</span></summary><p>Обзор выделяет, среди прочего, давление постоянной доступности, страх пропустить события и перегрузку коммуникацией. <a href="https://doi.org/10.1007/s10567-019-00300-5" target="_blank" rel="noreferrer">Открыть статью ↗</a></p></details>
@@ -131,7 +210,16 @@
     </section>
   </main>
 
-  <footer><div class="wrap footline"><div><span class="foot-brand">Тише в цифре</span><span class="small">Информационный сайт-памятка · индивидуальный проект · 2026</span></div><div class="foot-right">Материал не заменяет консультацию специалиста.<br>Тамбов</div></div></footer>
-  <script src="assets/app.js?v=8" defer></script>
+  <footer class="outro">
+    <div class="outro-inner">
+      <p class="outro-headline">Теперь —<br>чуть <em>тише.</em></p>
+      <div class="outro-grid">
+        <p class="outro-meta">Начни с одного шага из <a href="#steps" data-smooth-scroll>советов</a> и отметь его в <a href="#plan" data-smooth-scroll>мини-плане</a>. Не выключать всё&nbsp;— выбрать важное.</p>
+        <div class="outro-actions"><button class="quiet-toggle quiet-go" type="button" aria-pressed="false" hidden><span>Режим «Тише»</span><span class="switch" aria-hidden="true"></span></button><a class="btn btn-ghost" href="#top" data-smooth-scroll>Наверх <span aria-hidden="true">↑</span></a></div>
+      </div>
+      <div class="colophon"><span><strong>Тише в цифре</strong> · Информационный сайт-памятка · индивидуальный проект · 2026</span><span>Материал не заменяет консультацию специалиста. Тамбов</span></div>
+    </div>
+  </footer>
+  <script src="assets/app.js?v=9" defer></script>
 </body>
 </html>

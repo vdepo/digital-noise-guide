@@ -48,7 +48,7 @@ open index.html
 1. Перейдите в папку проекта и подтяните свежую версию:
 
    ```bash
-   cd ~/Documents/digital-noise-guide
+   cd ~/Desktop/Проекты/digital-noise-guide
    git pull
    ```
 
